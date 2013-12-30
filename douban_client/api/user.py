@@ -34,9 +34,35 @@ class User(DoubanApiBase):
         page = start/count
         return self._get('/shuo/v2/users/%s/following'%id, page=page, count=count)
 
+    def all_following(self, id):
+        page = 1
+        count = 200
+        sub_following_list = self._get('/shuo/v2/users/%s/following'%id, page=page, count=200)
+        following_list = []
+        following_list += sub_following_list
+        page = 2
+        while ( len( sub_following_list ) == count ):
+            sub_following_list = self._get('/shuo/v2/users/%s/following'%id, page=page, count=200)
+            following_list += sub_following_list
+            page += 1
+        return following_list
+
     def followers(self, id, start=DEFAULT_START, count=DEFAULT_COUNT):
         page = start/count
         return self._get('/shuo/v2/users/%s/followers'%id, page=page, count=count)
+
+    def all_followers(self, id):
+        page = 1
+        count = 200
+        sub_followers_list = self._get('/shuo/v2/users/%s/followers'%id, page=page, count=200)
+        followers_list = []
+        followers_list += sub_followers_list
+        page = 2
+        while ( len( sub_followers_list ) == count ):
+            sub_followers_list = self._get('/shuo/v2/users/%s/followers'%id, page=page, count=200)
+            followers_list += sub_followers_list
+            page += 1
+        return followers_list
 
     def follow_in_common(self, id, start=DEFAULT_START, count=DEFAULT_COUNT):
         return self._get('/shuo/v2/users/%s/follow_in_common'%id, start=start, count=count)
